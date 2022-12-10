@@ -6,12 +6,6 @@ router.get('/', async (req, res) => {
   try {
     // Get all projects and JOIN with user data
     const blogData = await BlogPost.findAll({
-      // attributes:[
-      //     'id',
-      //     'title',
-      //     'created_at',
-      //     'post_content'
-      // ],
       include: [
         {
           model: BlogComment,
@@ -30,7 +24,7 @@ router.get('/', async (req, res) => {
     // Pass serialized data and session flag into template
     res.render('homepage', { 
       dbPostData, 
-      // logged_in: req.session.logged_in 
+      logged_in: req.session.logged_in 
     });
   } catch (err) {
     res.status(500).json(err);
@@ -43,7 +37,6 @@ router.get('/blogpost/:id', async (req, res) => {
       include: [
         
            User
-          // attributes: ['name'],
       
       ],
     });
@@ -65,12 +58,12 @@ router.get('/profile', withAuth, async (req, res) => {
     // Find the logged in user based on the session ID
     const userData = await User.findByPk(req.session.user_id, {
       attributes: { exclude: ['password'] },
-      include: [{ model: Project }],
+      include: [{ model: BlogPost }],
     });
 
     const user = userData.get({ plain: true });
 
-    res.render('profile', {
+    res.render('dashboard', {
       ...user,
       logged_in: true
     });
