@@ -1,40 +1,50 @@
 const router = require('express').Router();
-const { Project, User } = require('../models');
+const { User, BlogPost, BlogComment } = require('../models');
 const withAuth = require('../utils/auth');
 
 router.get('/', async (req, res) => {
   try {
     // Get all projects and JOIN with user data
-    const projectData = await Project.findAll({
+    const blogData = await BlogPost.findAll({
+      // attributes:[
+      //     'id',
+      //     'title',
+      //     'created_at',
+      //     'post_content'
+      // ],
       include: [
         {
-          model: User,
-          attributes: ['name'],
+          model: BlogComment,
+          attributes: ['id', 'blogComment_text', 'post_id', 'user_id'],
+          include: {
+            model: User, 
+            attributes: ['name']
+          }
         },
       ],
     });
 
     // Serialize data so the template can read it
-    const projects = projectData.map((project) => project.get({ plain: true }));
-
+    const dbPostData = blogData.map((postData) => postData.get({ plain: true }));
+    console.log(dbPostData);
     // Pass serialized data and session flag into template
     res.render('homepage', { 
-      projects, 
-      logged_in: req.session.logged_in 
+      dbPostData, 
+      // logged_in: req.session.logged_in 
     });
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-router.get('/project/:id', async (req, res) => {
+router.get('/blogpost/:id', async (req, res) => {
   try {
-    const projectData = await Project.findByPk(req.params.id, {
+    const projectData = await BlogPost.findByPk(req.params.id, {
       include: [
-        {
-          model: User,
-          attributes: ['name'],
-        },
+        
+           User
+          // attributes: ['name'],
+      
       ],
     });
 
