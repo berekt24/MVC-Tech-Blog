@@ -40,6 +40,6 @@ app.use(require('./controllers/'));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
-  sequelize.sync({ force: false });
+  sequelize.sync({ force: true });
 });
   

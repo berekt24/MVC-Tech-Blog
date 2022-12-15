@@ -6,17 +6,10 @@ router.get('/', async (req, res) => {
   try {
     // Get all projects and JOIN with user data
     const blogData = await BlogPost.findAll({
-      include: [
-        {
-          model: BlogComment,
-          attributes: ['id', 'blogComment_text', 'post_id', 'user_id'],
-          include: {
-            model: User, 
-            attributes: ['name']
-          }
-        },
-      ],
-    });
+      include: [{ model: BlogComment,
+          attributes: ['blogComment_text'], }, {model: User, 
+            attributes: ['name'], }],
+        });
 
     // Serialize data so the template can read it
     const dbPostData = blogData.map((postData) => postData.get({ plain: true }));
@@ -33,15 +26,13 @@ router.get('/', async (req, res) => {
 
 router.get('/blogpost/:id', async (req, res) => {
   try {
-    const projectData = await BlogPost.findByPk(req.params.id, {
-      include: [
-        
-           User
-      
-      ],
-    });
+    const blogData = await BlogPost.findByPk(req.params.id, {
+      include: [{ model: BlogComment,
+          attributes: ['blogComment_text'], }, {model: User, 
+            attributes: ['name'], }],
+        });
 
-    const project = projectData.get({ plain: true });
+    const project = blogData.get({ plain: true });
 
     res.render('project', {
       ...project,
