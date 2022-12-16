@@ -6,7 +6,7 @@ const newFormHandler = async (event) => {
   const description = document.querySelector('#project-desc').value.trim();
 
    
-    await fetch(`/api/projects`, {
+    await fetch(`/api/blogpost`, {
       method: 'POST',
       body: JSON.stringify({ name, description }),
       headers: {
@@ -15,7 +15,7 @@ const newFormHandler = async (event) => {
     });
 
     
-      document.location.replace('/profile')
+      document.location.replace('/dashboard')
 };
 
 document
